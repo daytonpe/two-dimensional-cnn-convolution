@@ -98,6 +98,21 @@ def up_sampling(input_tensor, input_feature_map_up_sampling_factor):
     return up_sampled_tensor
 
 
+def combine_matrices(A, B):
+    if np.shape(A) != np.shape(B):
+        print('Error, matrices must be the same size to combine.')
+        return []
+
+    original_size = list(np.shape(A))
+    combined_matrix = np.zeros(np.shape(A))
+
+    for i in range(original_size[0]):  # each row
+        for j in range(0, original_size[1]):  # each col
+            combined_matrix[i][j] = A[i][j] * B[i][j]
+
+    return combined_matrix
+
+
 ##############################################################################
 input_tensor = generate_data(input_feature_type, input_feature_map_size)
 print('\nInput feature map:\n')
@@ -121,3 +136,6 @@ output_tensor = np.zeros((filter_coefficient_size[0],
 
 print('\nOutput feature map:\n')
 print(output_tensor)
+
+# print('\n\n combine test\n\n')
+# print(combine_matrices(np.ones((3, 3)), np.zeros((3, 3,))))
