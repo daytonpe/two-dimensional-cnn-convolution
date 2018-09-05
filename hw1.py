@@ -53,9 +53,7 @@ def generate_data(feature_type, feature_map_size):
         return [[[]]]
 
 
-def pre_process(input_tensor, input_feature_map_zero_padding):
-
-    # zero padding
+def zero_padding(input_tensor, input_feature_map_zero_padding):
 
     # for ease and code clarity
     Pl = input_feature_map_zero_padding[0]
@@ -69,24 +67,49 @@ def pre_process(input_tensor, input_feature_map_zero_padding):
     processed_size[2] += (Pl + Pr)
     processed_size_tuple = tuple(processed_size)
 
-    print('original_size', original_size)
-
     padded_tensor = np.zeros(processed_size_tuple)
 
     for i in range(original_size[0]):  # each channel
         for j in range(Pt, Pt + original_size[1]):  # each row (not padding)
             for k in range(Pl, Pl + original_size[2]):  # each col (not padding)
                 padded_tensor[i][j][k] = input_tensor[i][j-Pt][k-Pl]
-    return padded_tensor;
+
+    return padded_tensor
 
 
-###############################################################################################
+def up_sampling(input_tensor, input_feature_map_up_sampling_factor):
+
+    # for ease and code clarity
+    Ur = input_feature_map_up_sampling_factor[0]
+    Uc = input_feature_map_up_sampling_factor[1]
+
+    original_size = list(np.shape(input_tensor))
+    processed_size = list(np.shape(input_tensor))
+    processed_size[1] += (Uc*processed_size[1])
+    processed_size[2] += (Ur*processed_size[2])
+    processed_size_tuple = tuple(processed_size)
+    up_sampled_tensor = np.zeros(processed_size_tuple)
+
+    for i in range(original_size[0]):  # each channel
+        for j in range(0, original_size[1]):  # each row (not padding)
+            for k in range(0, original_size[2]):  # each col (not padding)
+                up_sampled_tensor[i][j + (j * Uc)][k + (k * Ur)] = input_tensor[i][j][k]
+
+    return up_sampled_tensor
+
+
+##############################################################################
 input_tensor = generate_data(input_feature_type, input_feature_map_size)
 print('\nInput feature map:\n')
 print(input_tensor)
 
+
+print('\nInput feature map with up sampling:\n')
+print(up_sampling(input_tensor, input_feature_map_up_sampling_factor))
+
+
 print('\nInput feature map with zero padding:\n')
-print(pre_process(input_tensor, input_feature_map_zero_padding))
+print(zero_padding(input_tensor, input_feature_map_zero_padding))
 
 filter_tensor = generate_data(filter_coefficient_type, filter_coefficient_size)
 print('\nFilter coefficients:\n')
