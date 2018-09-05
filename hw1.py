@@ -11,11 +11,11 @@ from random import randint
 
 
 input_feature_type = "sequential"  # {random, sequential}
-input_feature_map_size = [3, 3, 3]  # Ni, Lr, Lc (channels, rows cols)
+input_feature_map_size = (2, 5, 5)  # Ni, Lr, Lc (channels, rows cols)
 input_feature_map_zero_padding = [1, 1, 1, 1]  # Pl, Pr, Pt, Pb
 input_feature_map_up_sampling_factor = [1, 1]  # Ur, Uc
-filter_coefficient_type = "random"  # {random, sequential}
-filter_coefficient_size = [3, 3, 3, 3]  # No, Ni, Fr, Fc
+filter_coefficient_type = "sequential"  # {random, sequential}
+filter_coefficient_size = (3, 2, 3, 3)  # No, Ni, Fr, Fc
 filter_coefficient_up_sampling_factor = [1, 1]  # Dr, Dc
 output_feature_map_channels = 1  # No
 output_feature_map_down_sampling_factor = [1, 1]  # Sr, Sc
@@ -24,9 +24,7 @@ output_feature_map_down_sampling_factor = [1, 1]  # Sr, Sc
 def generate_data(feature_type, feature_map_size):
 
     # Generate correctly size tensor of zeros
-    tensor = np.zeros((feature_map_size[0],
-                       feature_map_size[1],
-                       feature_map_size[2]))
+    tensor = np.zeros(feature_map_size)
 
     # seed random number generator
     seed(1)
@@ -57,5 +55,16 @@ def generate_data(feature_type, feature_map_size):
 
 ###############################################################################################
 input_tensor = generate_data(input_feature_type, input_feature_map_size)
-print()
+print('\nInput feature map:\n')
 print(input_tensor)
+
+filter_tensor = generate_data(filter_coefficient_type, filter_coefficient_size)
+print('\nFilter coefficients:\n')
+print(filter_tensor)
+
+output_tensor = np.zeros((filter_coefficient_size[0],
+                         filter_coefficient_size[2],
+                         filter_coefficient_size[3]))
+
+print('\nOutput feature map:\n')
+print(output_tensor)
