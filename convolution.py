@@ -122,9 +122,18 @@ def createInputMatrix(X, F_size, Y_size):
     Mc = Y_size[2]
 
     X_matrix = np.zeros((Ni * Fr * Fc, Mr * Mc))
-
+    r = 0
+    c = 0
+    for mr in range(Mr):
+        for mc in range(Mc):
+            for ni in range(Ni):
+                for fr in range(Fr):
+                    for fc in range(Fc):
+                        X_matrix[r, c] = X[ni, mr + fr, mc + fc]
+                        r += 1
+            r = 0  # reset row index
+            c += 1
     print(X_matrix)
-
 
 
 ##############################################################################
@@ -133,7 +142,7 @@ print('\nInput feature map:\n')
 print(input_tensor)
 
 print('\nInput feature matrix size (no values yet):\n')
-createInputMatrix(input_tensor, (3,2,3,3), (3,3,3))
+createInputMatrix(input_tensor, filter_coefficient_size, (3, 3, 3))
 
 print('\nInput feature map with up sampling:\n')
 print(up_sampling(input_tensor, input_feature_map_up_sampling_factor))
