@@ -113,17 +113,18 @@ def combine_matrices(A, B):
     return combined_matrix
 
 
-def resize_input_feature_map(input_tensor, filter_coefficient_size):
-    # turn input feature map into an array of matrices the size of the filter
+def createInputMatrix(X, F_size, Y_size):
+    # turn input feature map into a matrix
+    Ni = F_size[1]
+    Fr = F_size[2]
+    Fc = F_size[3]
+    Mr = Y_size[1]
+    Mc = Y_size[2]
 
-    resized_feature_map = []
+    X_matrix = np.zeros((Ni * Fr * Fc, Mr * Mc))
 
-    # each possible subset of the input matrix
-    for i in range(filter_coefficient_size[2] * filter_coefficient_size[3]):
-        subset_matrix = np.zeros(np.shape((filter_coefficient_size[2]), filter_coefficient_size[3]))
-        for j in range(filter_coefficient_size[2]):  # each row
-            for k in range(filter_coefficient_size[3]):  # each col
-                subset_matrix[j][k] = input_tensor[j][k]
+    print(X_matrix)
+
 
 
 ##############################################################################
@@ -131,6 +132,8 @@ input_tensor = generate_data(input_feature_type, input_feature_map_size)
 print('\nInput feature map:\n')
 print(input_tensor)
 
+print('\nInput feature matrix size (no values yet):\n')
+createInputMatrix(input_tensor, (3,2,3,3), (3,3,3))
 
 print('\nInput feature map with up sampling:\n')
 print(up_sampling(input_tensor, input_feature_map_up_sampling_factor))
