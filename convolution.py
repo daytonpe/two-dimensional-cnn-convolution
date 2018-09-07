@@ -145,7 +145,8 @@ def createInputMatrix(X, F_size, Y_size):
                         r += 1
             r = 0  # reset row index
             c += 1
-    print(X_matrix)
+
+    return X_matrix
 
 
 def createBlankOutputMatrix(output_feature_map_channels, input_feature_map_size):
@@ -173,41 +174,59 @@ def createFilterMatrix(F_matrix, filter_tensor, No, Ni):
     return F_matrix
 
 
-##############################################################################
-input_tensor = generate_data(input_feature_type, input_feature_map_size)
-print('\nInput feature map:\n')
-print(input_tensor)
+def multiply(No, Mr, Mc, Ni, Fr, Fc, Y_matrix, X_matrix, F_matrix):
+    for no in range(No):
+        for i in range(Mr * Mc):
+            for j in range(Ni * Fr * Fc):
+                Y_matrix[no, i] = Y_matrix[no, i] + F_matrix[no, j]*X_matrix[j, i]
+    return Y_matrix
 
-print('\nOutput matrix (blank)')
+
+##############################################################################
+# Visualization
+input_tensor = generate_data(input_feature_type, input_feature_map_size)
+# print('\nInput feature map:\n')
+# print(input_tensor)
+
+# print('\nOutput matrix (blank)')
 Y_matrix = createBlankOutputMatrix(output_feature_map_channels, input_feature_map_size)
 Y_shape = np.shape(Y_matrix)
-print(Y_matrix)
+# print(Y_matrix)
 
 print('\nInput feature matrix size (no values yet):\n')
-createInputMatrix(input_tensor, filter_coefficient_size, Y_shape)
+X_matrix = createInputMatrix(input_tensor, filter_coefficient_size, Y_shape)
+print(X_matrix)
 
-print('\nInput feature map with up sampling:\n')
-print(up_sampling(input_tensor, input_feature_map_up_sampling_factor))
+# print('\nInput feature map with up sampling:\n')
+# print(up_sampling(input_tensor, input_feature_map_up_sampling_factor))
 
 
-print('\nInput feature map with zero padding:\n')
-print(zero_padding(input_tensor, input_feature_map_zero_padding))
+# print('\nInput feature map with zero padding:\n')
+# print(zero_padding(input_tensor, input_feature_map_zero_padding))
 
 filter_tensor = generate_data(filter_coefficient_type, filter_coefficient_size)
-print('\nFilter tensor:\n')
-print(filter_tensor)
+# print('\nFilter tensor:\n')
+# print(filter_tensor)
 
 print('\nFilter matrix:')
-print(createFilterMatrix(F_matrix, filter_tensor, No, Ni))
+F_matrix = createFilterMatrix(F_matrix, filter_tensor, No, Ni)
+print(F_matrix)
 
 output_tensor = np.zeros((filter_coefficient_size[0],
                          filter_coefficient_size[2],
                          filter_coefficient_size[3]))
 
-print('\nOutput feature map:\n')
-print(output_tensor)
+# print('\nOutput feature map:\n')
+# print(output_tensor)
 
-
+print('\nOutput matrix:\n')
+Lr = input_feature_map_size[1]
+Lc = input_feature_map_size[2]
+Fr = filter_coefficient_size[2]
+Fc = filter_coefficient_size[3]
+Mr = Lr - Fr + 1
+Mc = Lc - Fc + 1
+print(multiply(No, Mr, Mc, Ni, Fr, Fc, Y_matrix, X_matrix, F_matrix))
 
 
 # print('\n\n combine test\n\n')
