@@ -25,6 +25,9 @@ Ni = input_feature_map_size[0]
 Fr = filter_coefficient_size[2]
 Fc = filter_coefficient_size[3]
 
+F_matrix = np.zeros((No, Ni * Fr * Fc))
+
+
 def generate_data(feature_type, feature_map_size):
 
     # Generate correctly size tensor of zeros
@@ -157,6 +160,19 @@ def createBlankOutputMatrix(output_feature_map_channels, input_feature_map_size)
     return Y_matrix
 
 
+def createFilterMatrix(F_matrix, filter_tensor, No, Ni):
+    c = 0
+
+    for no in range(No):
+        for ni in range(Ni):
+            for fr in range(Fr):
+                for fc in range(Fc):
+                    F_matrix[no, c] = filter_tensor[no, ni, fr, fc]
+                    c += 1
+        c = 0
+    return F_matrix
+
+
 ##############################################################################
 input_tensor = generate_data(input_feature_type, input_feature_map_size)
 print('\nInput feature map:\n')
@@ -178,8 +194,11 @@ print('\nInput feature map with zero padding:\n')
 print(zero_padding(input_tensor, input_feature_map_zero_padding))
 
 filter_tensor = generate_data(filter_coefficient_type, filter_coefficient_size)
-print('\nFilter coefficients:\n')
+print('\nFilter tensor:\n')
 print(filter_tensor)
+
+print('\nFilter matrix:')
+print(createFilterMatrix(F_matrix, filter_tensor, No, Ni))
 
 output_tensor = np.zeros((filter_coefficient_size[0],
                          filter_coefficient_size[2],
